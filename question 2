@@ -1,0 +1,94 @@
+#include <stdio.h>
+
+int main()
+{
+    int ns, nu, i, j, time = 0;
+    int atS[10], btS[10], wtS[10], tatS[10], pidS[10];
+    int atU[10], btU[10], wtU[10], tatU[10], pidU[10];
+    int temp;
+    float totalwt=0, totaltat=0, avgwt, avgtat;
+
+ 
+    printf("Enter number of system processes: ");
+    scanf("%d",&ns);
+
+    for(i=0;i<ns;i++)
+    {
+        pidS[i]=i+1;
+        printf("Enter AT and BT  process %d: ",i+1);
+        scanf("%d%d",&atS[i],&btS[i]);
+    }
+
+    printf("Enter number of user process: ");
+    scanf("%d",&nu);
+
+    for(i=0;i<nu;i++)
+    {
+        pidU[i]=i+1;
+        printf("Enter AT and BT for pu%d: ",i+1);
+        scanf("%d%d",&atU[i],&btU[i]);
+    }
+
+
+    for(i=0;i<ns-1;i++)
+        for(j=i+1;j<ns;j++)
+            if(atS[i] > atS[j])
+            {
+                temp=atS[i]; atS[i]=atS[j]; atS[j]=temp;
+                temp=btS[i]; btS[i]=btS[j]; btS[j]=temp;
+                temp=pidS[i]; pidS[i]=pidS[j]; pidS[j]=temp;
+            }
+
+ 
+    for(i=0;i<nu-1;i++)
+        for(j=i+1;j<nu;j++)
+            if(atU[i] > atU[j])
+            {
+                temp=atU[i]; atU[i]=atU[j]; atU[j]=temp;
+                temp=btU[i]; btU[i]=btU[j]; btU[j]=temp;
+                temp=pidU[i]; pidU[i]=pidU[j]; pidU[j]=temp;
+            }
+
+    
+    printf("PID \tAT \tBT \tWT \tTAT\n");
+
+    for(i=0;i<ns;i++)
+    {
+        if(time < atS[i])
+            time = atS[i];
+
+        wtS[i] = time - atS[i];
+        tatS[i] = wtS[i] + btS[i];
+        time += btS[i];
+
+        totalwt += wtS[i];
+        totaltat += tatS[i];
+
+        printf("S%d  %d  %d  %d  %d\n",pidS[i],atS[i],btS[i],wtS[i],tatS[i]);
+    }
+
+    
+
+    for(i=0;i<nu;i++)
+    {
+        if(time < atU[i])
+            time = atU[i];
+
+        wtU[i] = time - atU[i];
+        tatU[i] = wtU[i] + btU[i];
+        time += btU[i];
+
+        totalWT += wtU[i];
+        totalTAT += tatU[i];
+
+        printf("U%d  %d  %d  %d  %d\n",pidU[i],atU[i],btU[i],wtU[i],tatU[i]);
+    }
+
+    avgWT = totalWT / (ns + nu);
+    avgTAT = totalTAT / (ns + nu);
+
+    printf("\nAverage Waiting Time = %.2f\n", avgWT);
+    printf("Average Turnaround Time = %.2f\n", avgTAT);
+
+    return 0;
+}
