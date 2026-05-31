@@ -1,0 +1,23 @@
+#include <stdio.h> #define MAX 10 typedef struct { 
+    int pid;     int burst;     int deadline_rel;     int period;     int remaining_burst;     int current_deadline; 
+} Task; int main() {         Task tasks[MAX];     int n, total_Tme;     prinG("Enter number of processes: ");     if (scanf("%d", &n) != 1) return 1;     for (int i = 0; i < n; i++) {         tasks[i].pid = i + 1;         prinG("Enter burst, deadline, and period for Task %d: ", i + 1);         scanf("%d %d %d", &tasks[i].burst, &tasks[i].deadline_rel, &tasks[i].period);         tasks[i].remaining_burst = 0;         tasks[i].current_deadline = 0; 
+    } 
+    prinG("Enter total scheduling Tme (e.g., 20): ");     scanf("%d", &total_Tme);     prinG("\nPID\tBurst\tDeadline\tPeriod\n"); 
+    for (int i = 0; i < n; i++) {         prinG("%d\t%d\t%d\t\t%d\n", tasks[i].pid, tasks[i].burst, tasks[i].deadline_rel, tasks[i].period); 
+    } 
+    prinG("\n--- Scheduling Log ---\n");     for (int t = 0; t < total_Tme; t++) {             for (int i = 0; i < n; i++) {             if (t % tasks[i].period == 0) {                 tasks[i].remaining_burst = tasks[i].burst;                 tasks[i].current_deadline = t + tasks[i].deadline_rel; 
+            } 
+        } 
+        int selected = -1;         int min_deadline = 9999;         for (int i = 0; i < n; i++) { 
+            if (tasks[i].remaining_burst > 0) {                 if (tasks[i].current_deadline < min_deadline) {                     min_deadline = tasks[i].current_deadline;                     selected = i; 
+                } 
+            } 
+        } 
+        if (selected == -1) {             prinG("%dms : CPU is idle.\n", t); 
+        } else { 
+            prinG("%dms : Task %d is running.\n", t, tasks[selected].pid);             tasks[selected].remaining_burst--; 
+        } 
+    } 
+    return 0; 
+} 
+
